@@ -16,7 +16,8 @@ An Automated tool leveraging Certipy &amp; secretsdump.py to gain Domain Admin f
 python3 esc1.py -u ryan.cooper@sequel.htb -p 'NuclearMosquito3' -t sequel.htb
 ```
 
-![image](https://github.com/user-attachments/assets/7c8eb551-4cf9-4194-aa5d-b99a7ce5bedb)
+![image](https://github.com/user-attachments/assets/d6687a62-ab1d-4457-a67a-fa927d6b8fa9)
+
 
 
 ### ESC4 - ADCS
