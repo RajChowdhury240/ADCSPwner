@@ -4,11 +4,11 @@ An Automated tool leveraging Certipy &amp; secretsdump.py to gain Domain Admin f
 ## ADCS + DCSync Automation
 
 #### Prerequisites 
-```
+
 - Certipy
 - secretsdump.py (Part of impacket)
 - pip3 install rich
-```
+
 
 ### ESC1 - ADCS
 
